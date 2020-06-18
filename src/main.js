@@ -11,6 +11,12 @@ import './assets/iconfont/iconfont.css'
 import axios from 'axios'
 // 配置请求的根路径
 axios.defaults.baseURL = 'http://127.0.0.1:8888/api/private/v1/'
+// c
+axios.interceptors.request.use(confing => {
+  // console.log(confing)
+  confing.headers.Authorization = window.sessionStorage.getItem('token')
+  return confing
+})
 Vue.prototype.$http = axios
 
 Vue.use(ElementUI)
