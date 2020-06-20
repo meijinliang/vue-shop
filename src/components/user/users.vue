@@ -323,6 +323,7 @@ export default {
     // 监听编辑用户对话框的关闭事件
     editDialogClosed () {
       this.$refs.editFormRef.resetFields()
+      // 这里为什么要给表单重置信息 不是每次打开都会从服务器获取信息的吗？
     },
     // 修改用户信息并提交
     editUserInfo () {
@@ -376,12 +377,12 @@ export default {
 
       // 展示对话框之前， 获取所有的角色列表
       const { data: res } = await this.$http.get('roles')
-      console.log(res)
+      // console.log(res)
       if (res.meta.status !== 200) {
         return this.$message.error('获取角色列表失败')
       }
       this.rolesList = res.data
-      console.log(this.rolesList)
+      // console.log(this.rolesList)
       this.setRoleDialogVisible = true
     },
     // 点击按钮 分配角色
