@@ -8,6 +8,8 @@ import Rights from '../components/power/rights.vue'
 import Roles from '../components/power/roles.vue'
 import Cate from '../components/goods/cate.vue'
 import Params from '../components/goods/params.vue'
+import goodList from '../components/goods/list.vue'
+import addGoods from '../components/goods/add.vue'
 Vue.use(VueRouter)
 
 const originalPush = VueRouter.prototype.push
@@ -30,7 +32,9 @@ const router = new VueRouter({
         { path: '/rights', component: Rights },
         { path: '/roles', component: Roles },
         { path: '/categories', component: Cate },
-        { path: '/params', component: Params }
+        { path: '/params', component: Params },
+        { path: '/goods', component: goodList },
+        { path: '/goods/add', component: addGoods }
       ]
     }
   ]

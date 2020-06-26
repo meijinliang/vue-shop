@@ -5,7 +5,8 @@ body,
     height: 100%;
     margin: 0;
     padding: 0;
-    /* min-width: 1366px; */
+    min-width: 1366px;
+    text-align: left;
 }
 .el-breadcrumb{
     margin-bottom: 15px;
@@ -19,4 +20,7 @@ body,
 }
 .el-pagination {
     margin-top: 15px;
+}
+.ql-editor {
+    min-height: 300px;
 }

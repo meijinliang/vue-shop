@@ -10,7 +10,7 @@
       <!-- 添加角色按钮区 -->
       <el-row>
         <el-col :span="2">
-          <el-button type="primary">添加角色</el-button>
+          <el-button type="primary" @click="addRoleDialogdialogVisible = true">添加角色</el-button>
         </el-col>
       </el-row>
       <!-- 角色列表区 -->
@@ -67,7 +67,12 @@
         <el-table-column label="操作" width="300px">
           <template slot-scope="scope">
             <!-- 编辑按钮 -->
-            <el-button type="primary" icon="el-icon-edit" size="mini">编辑</el-button>
+            <el-button
+              type="primary"
+              icon="el-icon-edit"
+              size="mini"
+              @click="editRoleDialogdialogVisible = true"
+            >编辑</el-button>
             <!-- 删除按钮 -->
             <el-button type="danger" icon="el-icon-delete" size="mini">删除</el-button>
             <el-button
@@ -81,6 +86,58 @@
       </el-table>
     </el-card>
 
+    <!-- 添加角色对话框 -->
+    <el-dialog
+      title="添加角色"
+      :visible.sync="addRoleDialogdialogVisible"
+      width="50%"
+      @close="addRoleDialogdialogClosed"
+    >
+      <el-form
+        :model="addRoleForm"
+        :rules="addRoleFormRules"
+        ref="addRoleFormRef"
+        label-width="100px"
+      >
+        <el-form-item label="角色名称" prop="roleName">
+          <!-- prop是验证规则的属性 -->
+          <el-input v-model="addRoleForm.roleName"></el-input>
+        </el-form-item>
+        <el-form-item label="角色描述">
+          <el-input v-model="addRoleForm.roleDesc"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="addRoleDialogdialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addRole">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 编辑角色的对话框 -->
+    <el-dialog
+      title="编辑角色"
+      :visible.sync="editRoleDialogdialogVisible"
+      width="50%"
+      @close="editRoleDialogdialogClosed"
+    >
+      <el-form
+        :model="editRoleForm"
+        :rules="editRoleFormRules"
+        ref="editRoleFormRef"
+        label-width="100px"
+      >
+        <el-form-item label="角色名称" prop="roleName">
+          <!-- prop是验证规则的属性 -->
+          <el-input v-model="editRoleForm.roleName"></el-input>
+        </el-form-item>
+        <el-form-item label="角色描述">
+          <el-input v-model="editRoleForm.roleDesc"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="editRoleDialogdialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="editRole">确 定</el-button>
+      </span>
+    </el-dialog>
     <!-- 分配权限的对话框 -->
     <el-dialog
       title="分配权限"
@@ -127,7 +184,31 @@ export default {
       // 控制展示分配权限对话框的显示与隐藏
       setRightDialogdialogVisible: false,
       // 当前即将分配权限的id
-      roleId: []
+      roleId: [],
+      // 控制添加角色的显示与隐藏
+      addRoleDialogdialogVisible: false,
+      // 添加角色的表单数据
+      addRoleForm: {
+        roleName: '',
+        // 角色描述
+        roleDesc: ''
+      },
+      addRoleFormRules: {
+        roleName: [{
+          required: true,
+          message: '请输入角色',
+          trigger: 'blur'
+        }]
+      },
+      editRoleDialogdialogVisible: false,
+      editRoleForm: {},
+      editRoleFormRules: {
+        roleName: [{
+          required: true,
+          message: '请输入角色',
+          trigger: 'blur'
+        }]
+      }
     }
   },
   created () {
@@ -218,6 +299,32 @@ export default {
       this.getRoleList()
       this.setRightDialogdialogVisible = false
       this.$message.success('分配成功')
+    },
+    // 监听添加角色框的关闭事件
+    addRoleDialogdialogClosed () {
+      this.$refs.addRoleFormRef.resetFields()
+      this.addRoleForm.roleDesc = ''
+    },
+    // 添加角色
+    addRole () {
+      this.$refs.addRoleFormRef.validate(async valid => {
+        if (!valid) return this.$message.error('请输入角色名字')
+        const { data: res } = await this.$http.post('roles', this.addRoleForm)
+        if (res.meta.status !== 201) {
+          return this.$message.error('添加角色失败！')
+        }
+        this.getRoleList()
+        this.addRoleDialogdialogVisible = false
+        this.$message.success('添加角色成功！')
+      })
+    },
+    // 监听修改角色对话框的关闭事件
+    editRoleDialogdialogClosed () {
+      this.$refs.editRoleFormRef.resetFields()
+    },
+    // 修改角色
+    editRole () {
+
     }
   }
 }
